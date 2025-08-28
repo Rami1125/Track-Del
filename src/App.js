@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Assets and Data (Mocked for Client-side) ---
+// נתוני משתמשים מדומים: לקוחות, נהגים, מנהלים
 const mockUsers = {
     'client1': { id: 'C1', username: 'client1', password: '123', role: 'לקוח', name: 'משה כהן', avatar: 'https://placehold.co/96x96/60A5FA/FFFFFF?text=MC' },
     'client2': { id: 'C2', username: 'client2', password: '456', role: 'לקוח', name: 'שרה לוי', avatar: 'https://placehold.co/96x96/818CF8/FFFFFF?text=SL' },
@@ -9,8 +10,10 @@ const mockUsers = {
     'admin1': { id: 'A1', username: 'admin1', password: 'abc', role: 'מנהל', name: 'אנה המנהלת', avatar: 'https://placehold.co/96x96/FFC107/FFFFFF?text=AM' },
 };
 
+// רשימת ערים מדומות לבחירת מוצא ויעד
 const mockCities = ['תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'אשדוד', 'נתניה', 'רמת גן', 'פתח תקווה', 'ראשון לציון'];
 
+// קטלוג סוגי מטען מדומים
 const mockCargoCatalog = [
     { name: 'ריהוט וקרטונים', type: 'הובלת דירה', weightCapacity: 1000, volumeCapacity: 15 },
     { name: 'ציוד משרדי', type: 'הובלה מסחרית', weightCapacity: 500, volumeCapacity: 8 },
@@ -20,6 +23,7 @@ const mockCargoCatalog = [
     { name: 'פסולת בניין', type: 'פינוי פסולת', weightCapacity: 2000, volumeCapacity: 20 },
 ];
 
+// סוגי רכבים מדומים ותכולתם
 const mockVehicleTypes = [
     { name: 'משאית קלה', cargoTypes: ['ריהוט וקרטונים', 'ציוד משרדי', 'מטענים קטנים'], weightLimit: 1000, volumeLimit: 10 },
     { name: 'משאית בינונית', cargoTypes: ['ריהוט וקרטונים', 'ציוד משרדי', 'מכשירי חשמל', 'מזון בקירור'], weightLimit: 2000, volumeLimit: 20 },
@@ -28,7 +32,7 @@ const mockVehicleTypes = [
     { name: 'טנדר', cargoTypes: ['מטענים קטנים'], weightLimit: 500, volumeLimit: 5 },
 ];
 
-// Mocked Driver data, including vehicle type and specialty for matching
+// נתוני נהגים מדומים לצורך התאמה
 const mockDrivers = [
     { id: 'D1', name: 'הובלות אקספרס', truckType: 'משאית בינונית', specialties: ['ריהוט וקרטונים', 'ציוד משרדי'], rating: 4.8, distance: 15, weightCapacity: 1800, volumeCapacity: 18, avatar: 'https://placehold.co/96x96/22C55E/FFFFFF?text=HE' },
     { id: 'D2', name: 'לוגיסטיקה בקירור', truckType: 'משאית קירור', specialties: ['מזון בקירור'], rating: 4.9, distance: 20, weightCapacity: 1400, volumeCapacity: 14, avatar: 'https://placehold.co/96x96/10B981/FFFFFF?text=LB' },
@@ -37,7 +41,8 @@ const mockDrivers = [
     { id: 'D5', name: 'אחים לדרך', truckType: 'משאית קלה', specialties: ['ריהוט וקרטונים'], rating: 4.6, distance: 10, weightCapacity: 900, volumeCapacity: 9, avatar: 'https://placehold.co/96x96/6366F1/FFFFFF?text=AL' },
 ];
 
-let mockOrders = [ // Use `let` for orders so they can be updated
+// נתוני הזמנות מדומים - משתמשים ב-let כדי לאפשר עדכון דינמי בממשקים
+let mockOrders = [
     { id: 'ORD001', customerId: 'C1', customerName: 'משה כהן', cargoType: 'ריהוט וקרטונים', status: 'בהמתנה למוביל', from: 'תל אביב', to: 'חיפה', driverId: null, driverName: null, date: '2024-08-25', time: '10:00' },
     { id: 'ORD002', customerId: 'C1', customerName: 'משה כהן', cargoType: 'ציוד משרדי', status: 'בטיפול', from: 'ירושלים', to: 'באר שבע', driverId: 'D1', driverName: 'הובלות אקספרס', date: '2024-08-26', time: '12:30' },
     { id: 'ORD003', customerId: 'C2', customerName: 'שרה לוי', cargoType: 'מזון בקירור', status: 'נמסר', from: 'נתניה', to: 'אשדוד', driverId: 'D2', driverName: 'לוגיסטיקה בקירור', date: '2024-08-27', time: '09:00' },
@@ -48,6 +53,7 @@ let mockOrders = [ // Use `let` for orders so they can be updated
 
 
 // --- Custom Icons (Inline SVG) ---
+// רכיבי אייקונים מותאמים אישית ב-SVG
 const UserCircleIcon = ({ className = "w-6 h-6" }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.753 0-5.45-1.127-7.234-3.21a.75.75 0 01-.437-.695z" clipRule="evenodd" /></svg>;
 const LockClosedIcon = ({ className = "w-6 h-6" }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3 9V6.75a3.75 3.75 0 10-7.5 0v3a.75.75 0 011.5 0v-3a2.25 2.25 0 114.5 0v3a.75.75 0 011.5 0z" clipRule="evenodd" /></svg>;
 const TruckIcon = ({ className = "w-6 h-6" }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 7.5a3 3 0 10-3-3 3 3 0 003 3zm6 0a3 3 0 10-3-3 3 3 0 003 3zm2.25 9.75c0 .72-.09 1.4-.26 2.05L16.5 21l-3-1.5-.75-.38V15h-1.5v4.5L12 21l-3-1.5-.75-.38V15H6.75v5.75L3 21l-.75-.38L2.25 18c0-.72.09-1.4.26-2.05H7.5V12h9v4.5H17.75zM12 9a.75.75 0 00-.75.75v2.5a.75.75 0 001.5 0v-2.5A.75.75 0 0012 9z" /></svg>;
@@ -63,7 +69,7 @@ const MapPinIcon = ({ className = "w-6 h-6" }) => <svg className={className} xml
 
 
 // --- Shared Components (Toast & Modal) ---
-
+// רכיב טוסט להצגת הודעות קופצות למשתמש
 const Toast = ({ message, type, onDismiss }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -91,6 +97,7 @@ const Toast = ({ message, type, onDismiss }) => {
     );
 };
 
+// רכיב מודל (חלון קופץ) כללי
 const Modal = ({ isOpen, onClose, title, children }) => {
     return (
         <AnimatePresence>
@@ -120,6 +127,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 };
 
 // --- Login Screen Component ---
+// רכיב מסך ההתחברות הראשוני
 const LoginScreen = ({ onLogin, loginLoading, showToast }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -187,6 +195,7 @@ const LoginScreen = ({ onLogin, loginLoading, showToast }) => {
 };
 
 // --- Progress Stepper for Client App ---
+// רכיב פס התקדמות עבור תהליך הזמנה של לקוח
 const ProgressStepper = ({ currentStep, totalSteps = 2 }) => {
     const steps = ['פרטי הזמנה', 'בחירת מוביל'];
     const progressPercentage = ((currentStep - 1) / (totalSteps -1)) * 100;
@@ -220,6 +229,7 @@ const ProgressStepper = ({ currentStep, totalSteps = 2 }) => {
 };
 
 // --- Driver Card for Client App ---
+// רכיב כרטיס נהג המוצג ללקוח בבחירת מוביל
 const DriverCard = ({ driver, onSelect, isSelected }) => (
     <motion.div
         layout
@@ -265,11 +275,12 @@ const DriverCard = ({ driver, onSelect, isSelected }) => (
 );
 
 // --- Client Dashboard Component ---
+// רכיב לוח בקרה ומסך הזמנה עבור לקוחות
 const ClientDashboard = ({ user, onLogout, showToast }) => {
-    const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true); // Open on initial load for client
+    const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true); // מודל קבלת פנים נפתח בטעינה ראשונית
     const [isWhatsappModalOpen, setIsWhatsappModalOpen] = useState(false);
-    const [currentStep, setCurrentStep] = useState(1); // 1: Order Details, 2: Driver Selection
-    const [formData, setFormData] = useState({
+    const [currentStep, setCurrentStep] = useState(1); // שלב נוכחי בטופס (1: פרטי הזמנה, 2: בחירת מוביל)
+    const [formData, setFormData] = useState({ // נתוני הטופס
         companyId: '',
         deliveryDetails: '',
         stopsCount: 1,
@@ -281,11 +292,11 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
         pictures: [],
         documents: [],
     });
-    const [filteredDrivers, setFilteredDrivers] = useState([]);
-    const [selectedDriver, setSelectedDriver] = useState(null);
-    const [formSubmitting, setFormSubmitting] = useState(false);
+    const [filteredDrivers, setFilteredDrivers] = useState([]); // נהגים מסוננים ומוצעים
+    const [selectedDriver, setSelectedDriver] = useState(null); // נהג שנבחר
+    const [formSubmitting, setFormSubmitting] = useState(false); // מצב שליחת טופס
 
-    // --- Form Handlers ---
+    // מטפל בשינויים בשדות הטופס
     const handleFormChange = (e) => {
         const { name, value, files } = e.target;
         if (files) {
@@ -295,16 +306,17 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
         }
     };
 
+    // פונקציית עזר לחישוב מרחק (מדמה)
     const calculateDistance = (fromCity, toCity) => {
-        // Mock distance calculation based on index difference for demo purposes
         const idx1 = mockCities.indexOf(fromCity);
         const idx2 = mockCities.indexOf(toCity);
-        if (idx1 === -1 || idx2 === -1) return 50; // Default if not found
-        return Math.abs(idx1 - idx2) * 10 + 20; // Example calculation
+        if (idx1 === -1 || idx2 === -1) return 50; // ברירת מחדל אם לא נמצא
+        return Math.abs(idx1 - idx2) * 10 + 20; // חישוב מדמה
     };
 
+    // מטפל במעבר לשלב הבא בטופס
     const handleNextStep = async () => {
-        // Basic validation for Step 1
+        // ולידציה בסיסית לשלב 1
         if (currentStep === 1) {
             const { companyId, deliveryDetails, stopsCount, transactionType, cargoType, weight, dimensions, escort } = formData;
             if (!companyId || !deliveryDetails || !stopsCount || !transactionType || !cargoType || !weight || !dimensions || !escort) {
@@ -312,13 +324,13 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
                 return;
             }
 
-            // Simulate file uploads to Google Drive
+            // מדמה העלאת קבצים ל-Google Drive
             showToast('מעלה קבצים ל-Google Drive (הדמיה)...', 'info');
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate upload time
+            await new Promise(resolve => setTimeout(resolve, 1000)); // מדמה זמן העלאה
 
-            // Mock driver matching
+            // מדמה התאמת נהגים על בסיס נתוני ההזמנה
             const orderWeight = parseFloat(formData.weight);
-            const orderVolume = (dimensions) => { // Simple volume calculation from string "LxWxH"
+            const orderVolume = (dimensions) => { // חישוב נפח פשוט מתוך מחרוזת "LxWxH"
                 const parts = dimensions.split('x').map(s => parseFloat(s.trim()));
                 return parts.length === 3 ? parts[0] * parts[1] * parts[2] : 1;
             };
@@ -326,36 +338,37 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
 
             const scoredDrivers = mockDrivers.map(driver => {
                 let score = 0;
-                // 1. Truck Type & Specialty Match (40%)
+                // 1. התאמת סוג משאית והתמחות (40%)
                 const isSpecialtyMatch = driver.specialties.includes(formData.cargoType);
                 if (isSpecialtyMatch) score += 40;
-                else { // Partial match if truck type broadly supports cargo
+                else { // התאמה חלקית אם סוג המשאית תומך באופן כללי במטען
                     const compatibleVehicleType = mockVehicleTypes.find(v => v.name === driver.truckType && v.cargoTypes.includes(formData.cargoType));
                     if (compatibleVehicleType) score += 20;
                 }
 
-                // 2. Weight & Volume Capacity Match (30%)
+                // 2. התאמת קיבולת משקל ונפח (30%)
                 const weightRatio = Math.min(1, orderWeight / driver.weightCapacity);
                 const volumeRatio = Math.min(1, actualOrderVolume / driver.volumeCapacity);
-                score += (weightRatio + volumeRatio) / 2 * 30; // Average of weight and volume match
+                score += (weightRatio + volumeRatio) / 2 * 30; // ממוצע של התאמת משקל ונפח
 
-                // 3. Distance Match (20%) - assume formData.deliveryDetails contains "City From"
-                // For demo, we'll use a fixed distance or a very simple mock
+                // 3. התאמת מרחק (20%) - מניחים ש-formData.deliveryDetails מכיל "עיר מוצא"
+                // לצורך הדגמה, נשתמש במרחק קבוע או מדמה פשוט
                 const fromCityGuess = formData.deliveryDetails.split(',')[0].trim();
-                const driverDistance = driver.distance; // This is a mock driver's fixed distance for simplicity
-                score += Math.max(0, 20 - (Math.abs(driverDistance - calculateDistance(fromCityGuess, fromCityGuess)) / 5)); // Simple inverse relationship
+                const driverDistance = driver.distance; // מרחק מדמה קבוע של הנהג
+                score += Math.max(0, 20 - (Math.abs(driverDistance - calculateDistance(fromCityGuess, fromCityGuess)) / 5)); // יחס הפוך פשוט
 
-                // 4. Rating Match (10%)
+                // 4. התאמת דירוג (10%)
                 score += (driver.rating / 5) * 10;
 
                 return { ...driver, matchScore: Math.round(Math.max(0, Math.min(100, score))) };
             });
 
-            setFilteredDrivers(scoredDrivers.sort((a, b) => b.matchScore - a.matchScore));
-            setCurrentStep(2);
+            setFilteredDrivers(scoredDrivers.sort((a, b) => b.matchScore - a.matchScore)); // ממיין לפי ציון התאמה
+            setCurrentStep(2); // מעבר לשלב 2
         }
     };
 
+    // מטפל בשליחת הזמנה
     const handleSubmitOrder = async (e) => {
         e.preventDefault();
         if (!selectedDriver) {
@@ -365,9 +378,9 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
 
         setFormSubmitting(true);
         showToast('שולח הזמנה (הדמיה)...', 'info');
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 2000)); // מדמה זמן שליחה
 
-        // Mock saving the order
+        // מדמה שמירת ההזמנה
         const newOrderId = `ORD${String(mockOrders.length + 1).padStart(3, '0')}`;
         const newOrder = {
             id: newOrderId,
@@ -375,17 +388,17 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
             customerName: user.name,
             cargoType: formData.cargoType,
             status: 'בהמתנה למוביל',
-            from: formData.deliveryDetails.split(',')[0].trim(), // Extract city from delivery details
-            to: 'יעד נבחר', // Placeholder for now
+            from: formData.deliveryDetails.split(',')[0].trim(), // חילוץ עיר מפרטי אספקה
+            to: 'יעד נבחר', // מחזיק מקום כרגע
             driverId: selectedDriver.id,
             driverName: selectedDriver.name,
             date: new Date().toLocaleDateString('he-IL'),
             time: new Date().toLocaleTimeString('he-IL', {hour: '2-digit', minute:'2-digit'})
         };
-        mockOrders.push(newOrder); // Add to mock data
+        mockOrders.push(newOrder); // הוספה לנתונים המדומים הגלובליים
 
         showToast(`הזמנה ${newOrderId} נשלחה בהצלחה ל${selectedDriver.name}!`, 'success');
-        // Reset form and go back to step 1 (or dashboard)
+        // איפוס טופס וחזרה לשלב 1
         setFormData({
             companyId: '', deliveryDetails: '', stopsCount: 1, transactionType: '',
             cargoType: '', weight: '', dimensions: '', escort: '',
@@ -397,19 +410,23 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
         setFormSubmitting(false);
     };
 
+    // מטפל בחזרה לשלב הקודם בטופס
     const handlePreviousStep = () => {
         setCurrentStep(1);
     };
 
-    // --- FAB Functions ---
+    // --- FAB Functions --- (Floating Action Buttons)
+    // גלילה למעלה
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    // פתיחת מודל וואטסאפ
     const openWhatsappModal = () => {
         setIsWhatsappModalOpen(true);
     };
 
+    // שליחת הודעת וואטסאפ
     const sendWhatsappMessage = () => {
         const message = "שלום, אני מעוניין לבצע הזמנת הובלה חדשה דרך המערכת. אשמח לסיוע נוסף.";
         window.open(`https://wa.me/972508861080?text=${encodeURIComponent(message)}`, '_blank');
@@ -418,7 +435,7 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 text-gray-800 p-4 sm:p-8" dir="rtl">
-            {/* Header */}
+            {/* Header של לוח הלקוח */}
             <header className="flex justify-between items-center py-4 px-2 mb-8 bg-white rounded-xl shadow-lg backdrop-filter backdrop-blur-md bg-opacity-70">
                 <h1 className="text-xl sm:text-2xl font-bold text-blue-700">הזמנה חדשה</h1>
                 <button
@@ -429,13 +446,13 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
                 </button>
             </header>
 
-            {/* Main Form Content */}
+            {/* תוכן הטופס הראשי */}
             <div className="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl p-6 md:p-12 backdrop-filter backdrop-blur-md bg-opacity-80 border border-gray-200">
                 <ProgressStepper currentStep={currentStep} totalSteps={2} />
 
                 <form onSubmit={handleSubmitOrder}>
                     <AnimatePresence mode="wait">
-                        {currentStep === 1 && (
+                        {currentStep === 1 && ( // שלב 1: פרטי הזמנה
                             <motion.div
                                 key="step1"
                                 initial={{ opacity: 0, x: 100 }}
@@ -587,7 +604,7 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
                                             העלאת מסמכים (PDF, DOC)
                                         </label>
                                         <input type="file" id="documents" name="documents" multiple onChange={handleFormChange} className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept=".pdf,.doc,.docx" />
-                                        {/* Mocked PDF embed for demonstration */}
+                                        {/* תצוגת PDF מדומה לדוגמה */}
                                         {formData.documents.length > 0 && (
                                             <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
                                                 <p className="text-sm text-gray-600">קובץ מסמך לדוגמה (מוצג כ-PDF משוקף):</p>
@@ -610,7 +627,7 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
                             </motion.div>
                         )}
 
-                        {currentStep === 2 && (
+                        {currentStep === 2 && ( // שלב 2: בחירת מוביל
                             <motion.div
                                 key="step2"
                                 initial={{ opacity: 0, x: 100 }}
@@ -681,7 +698,7 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
                 </form>
             </div>
 
-            {/* Floating Action Buttons */}
+            {/* Floating Action Buttons - כפתורים צפים (גלילה למעלה, וואטסאפ) */}
             <div className="fixed bottom-8 right-8 flex flex-col items-center space-y-4 z-40">
                 <motion.button
                     initial={{ opacity: 0, scale: 0 }}
@@ -705,7 +722,7 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
                 </motion.button>
             </div>
 
-            {/* Modals */}
+            {/* Modals - חלונות קופצים */}
             <Modal isOpen={isWelcomeModalOpen} onClose={() => setIsWelcomeModalOpen(false)} title="ברוכים הבאים!">
                 <div className="flex flex-col items-center">
                     <img src={user?.avatar} alt="אווטאר" className="w-24 h-24 rounded-full border-4 border-blue-500 mb-4" />
@@ -729,25 +746,29 @@ const ClientDashboard = ({ user, onLogout, showToast }) => {
 
 
 // --- Driver Dashboard Component ---
+// רכיב לוח בקרה עבור נהגים
 const DriverDashboard = ({ user, onLogout, showToast }) => {
-    const [driverOrders, setDriverOrders] = useState([]);
-    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [driverOrders, setDriverOrders] = useState([]); // הזמנות המשויכות לנהג
+    const [selectedOrder, setSelectedOrder] = useState(null); // הזמנה שנבחרה לצפייה
 
+    // טוען הזמנות עבור הנהג הנוכחי בטעינת הרכיב
     useEffect(() => {
-        // Mock fetching orders for the logged-in driver
         const ordersForDriver = mockOrders.filter(order => order.driverId === user.id);
         setDriverOrders(ordersForDriver);
     }, [user]);
 
+    // מטפל בעדכון סטטוס הזמנה
     const handleUpdateOrderStatus = (orderId, newStatus) => {
         showToast(`מעדכן סטטוס הזמנה ${orderId} ל: ${newStatus} (הדמיה)...`, 'info');
-        // In a real app, this would be an API call to update the backend
+        // ביישום אמיתי, זו תהיה קריאת API לעדכון ה-backend
         setTimeout(() => {
-            // Update mockOrders array
+            // עדכון מערך mockOrders גלובלי
             mockOrders = mockOrders.map(order =>
                 order.id === orderId ? { ...order, status: newStatus } : order
             );
-            setDriverOrders(mockOrders.filter(order => order.driverId === user.id)); // Re-filter for current driver
+            // סינון מחדש של ההזמנות עבור הנהג הנוכחי
+            setDriverOrders(mockOrders.filter(order => order.driverId === user.id));
+            // עדכון ההזמנה הנבחרת במודל, אם היא זו שמתעדכנת
             setSelectedOrder(prev => prev && prev.id === orderId ? { ...prev, status: newStatus } : prev);
             showToast(`סטטוס הזמנה ${orderId} עודכן בהצלחה!`, 'success');
         }, 1000);
@@ -755,6 +776,7 @@ const DriverDashboard = ({ user, onLogout, showToast }) => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-blue-200 text-gray-800 p-4 sm:p-8" dir="rtl">
+            {/* Header של לוח הנהג */}
             <header className="flex justify-between items-center py-4 px-2 mb-8 bg-white rounded-xl shadow-lg backdrop-filter backdrop-blur-md bg-opacity-70">
                 <h1 className="text-xl sm:text-2xl font-bold text-indigo-700">לוח בקרה לנהג</h1>
                 <button
@@ -771,7 +793,7 @@ const DriverDashboard = ({ user, onLogout, showToast }) => {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {driverOrders.length > 0 ? (
+                {driverOrders.length > 0 ? ( // מציג כרטיסי הזמנות אם ישנן
                     driverOrders.map(order => (
                         <motion.div
                             key={order.id}
@@ -798,7 +820,7 @@ const DriverDashboard = ({ user, onLogout, showToast }) => {
                             <p className="text-xs text-gray-500 mt-1">תאריך: {order.date} {order.time}</p>
                         </motion.div>
                     ))
-                ) : (
+                ) : ( // הודעה אם אין הזמנות
                     <p className="md:col-span-3 text-center text-gray-500 py-8">אין לך הובלות פעילות כרגע.</p>
                 )}
             </div>
@@ -833,18 +855,20 @@ const DriverDashboard = ({ user, onLogout, showToast }) => {
 };
 
 // --- Admin Dashboard Component ---
+// רכיב לוח בקרה עבור מנהלים
 const AdminDashboard = ({ user, onLogout, showToast }) => {
-    const [allOrders, setAllOrders] = useState([]);
-    const [allDrivers, setAllDrivers] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterStatus, setFilterStatus] = useState('All');
+    const [allOrders, setAllOrders] = useState([]); // כל ההזמנות במערכת
+    const [allDrivers, setAllDrivers] = useState([]); // כל הנהגים במערכת
+    const [searchTerm, setSearchTerm] = useState(''); // מונח חיפוש
+    const [filterStatus, setFilterStatus] = useState('All'); // פילטר לפי סטטוס
 
+    // טוען את כל ההזמנות והנהגים בטעינת הרכיב
     useEffect(() => {
-        // Mock fetching all orders and drivers for the admin
-        setAllOrders(mockOrders); // Use the mutable mockOrders
+        setAllOrders(mockOrders); // משתמש במערך mockOrders הגלובלי המשתנה
         setAllDrivers(mockDrivers);
     }, []);
 
+    // מסנן הזמנות לפי מונח חיפוש וסטטוס
     const filteredOrders = allOrders.filter(order => {
         const matchesSearch = searchTerm === '' ||
             order.id.includes(searchTerm) ||
@@ -859,6 +883,7 @@ const AdminDashboard = ({ user, onLogout, showToast }) => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-200 text-gray-800 p-4 sm:p-8" dir="rtl">
+            {/* Header של לוח המנהל */}
             <header className="flex justify-between items-center py-4 px-2 mb-8 bg-white rounded-xl shadow-lg backdrop-filter backdrop-blur-md bg-opacity-70">
                 <h1 className="text-xl sm:text-2xl font-bold text-purple-700">לוח בקרה למנהל</h1>
                 <button
@@ -874,6 +899,7 @@ const AdminDashboard = ({ user, onLogout, showToast }) => {
                 כל ההזמנות
             </h2>
 
+            {/* פקדי חיפוש וסינון */}
             <div className="mb-6 flex flex-col sm:flex-row gap-4">
                 <input
                     type="text"
@@ -897,6 +923,7 @@ const AdminDashboard = ({ user, onLogout, showToast }) => {
                 </select>
             </div>
 
+            {/* טבלת הזמנות */}
             <div className="overflow-x-auto bg-white rounded-xl shadow-md border border-gray-200 mb-8">
                 <table className="min-w-full divide-y divide-gray-200 text-right">
                     <thead className="bg-gray-50">
@@ -941,6 +968,7 @@ const AdminDashboard = ({ user, onLogout, showToast }) => {
                 <MapPinIcon className="w-7 h-7 ml-2 text-purple-600" />
                 כל המובילים
             </h2>
+            {/* רשימת כרטיסי נהגים */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {allDrivers.map(driver => (
                     <motion.div
@@ -968,12 +996,13 @@ const AdminDashboard = ({ user, onLogout, showToast }) => {
 
 
 // --- Main App Component (Handles Authentication and Role-based Rendering) ---
+// רכיב הראשי של כל האפליקציה, מטפל באימות משתמש והצגה מותנית של לוחות הבקרה
 export default function App() {
-    const [user, setUser] = useState(null);
-    const [loginLoading, setLoginLoading] = useState(false);
-    const [toasts, setToasts] = useState([]);
+    const [user, setUser] = useState(null); // אובייקט המשתמש המחובר
+    const [loginLoading, setLoginLoading] = useState(false); // מצב טעינה להתחברות
+    const [toasts, setToasts] = useState([]); // רשימת הודעות טוסט
 
-    // --- Toast Management ---
+    // פונקציה להצגת הודעת טוסט
     const showToast = (message, type = 'info') => {
         const id = Date.now();
         setToasts((prev) => [...prev, { id, message, type }]);
@@ -982,10 +1011,10 @@ export default function App() {
         }, 5000);
     };
 
-    // --- Authentication ---
+    // מטפל בתהליך ההתחברות (מדמה)
     const handleLogin = (username, password) => {
         setLoginLoading(true);
-        setTimeout(() => { // Simulate API call to Apps Script
+        setTimeout(() => { // מדמה קריאת API ל-Apps Script
             const matchedUser = Object.values(mockUsers).find(
                 u => u.username === username && u.password === password
             );
@@ -1000,17 +1029,19 @@ export default function App() {
         }, 1500);
     };
 
+    // מטפל בתהליך ההתנתקות
     const handleLogout = () => {
         setUser(null);
         showToast('התנתקת בהצלחה.', 'info');
     };
 
-    // Conditional rendering based on user role
+    // פונקציה לבחירת לוח הבקרה להצגה בהתאם לתפקיד המשתמש
     const renderDashboard = () => {
-        if (!user) {
+        if (!user) { // אם אין משתמש מחובר, הצג מסך התחברות
             return <LoginScreen onLogin={handleLogin} loginLoading={loginLoading} showToast={showToast} />;
         }
 
+        // הצג לוח בקרה מתאים לפי תפקיד
         switch (user.role) {
             case 'לקוח':
                 return <ClientDashboard user={user} onLogout={handleLogout} showToast={showToast} />;
@@ -1018,22 +1049,23 @@ export default function App() {
                 return <DriverDashboard user={user} onLogout={handleLogout} showToast={showToast} />;
             case 'מנהל':
                 return <AdminDashboard user={user} onLogout={handleLogout} showToast={showToast} />;
-            default:
+            default: // למקרה של תפקיד לא מוכר
                 return <p className="text-center text-red-500">תפקיד לא מוכר.</p>;
         }
     };
 
     return (
         <div dir="rtl">
+            {/* סגנונות גלובליים בסיסיים */}
             <style>{`
                 body {
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-                    background-color: #f0f4f8; /* Default background */
+                    background-color: #f0f4f8; /* רקע ברירת מחדל */
                 }
             `}</style>
-            {renderDashboard()}
+            {renderDashboard()} {/* הצגת לוח הבקרה הרלוונטי */}
 
-            {/* Toasts Container */}
+            {/* Toasts Container - מיכל להודעות טוסט */}
             <div className="fixed top-4 right-4 z-[9999] space-y-2">
                 <AnimatePresence>
                     {toasts.map((toast) => (
