@@ -2,7 +2,7 @@
   "name": "track-del",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://Rami1125.github.io/Track-Del",
+  "homepage": "https://rami1125.github.io/Track-Del/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
